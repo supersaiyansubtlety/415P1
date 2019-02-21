@@ -7,9 +7,13 @@
 //
 
 #include <iostream>
+
+#include "gnuplot.h"
+
 #include <fstream>
 
 using namespace std;
+
 
 int consecutiveGCD(const int& left, const int& right);
 double avgConsecutiveGCD(const int& input);
@@ -17,6 +21,11 @@ double MDavg(int n);
 int gcd(int n, int i);
 
 int main(int argc, const char * argv[]) {
+    // insert code here...
+    std::cout << "Hello, World!\n";
+
+
+
     ofstream consecutiveGCDdat, euclidsGCDdat;
     consecutiveGCDdat.open("Consecutive GCD.dat");
     euclidsGCDdat.open("Euclid's GCD.dat");
@@ -29,6 +38,11 @@ int main(int argc, const char * argv[]) {
     
     consecutiveGCDdat.close();
     euclidsGCDdat.close();
+  
+    gnuplot p;
+    p("set term postscript eps");
+    p("set output \"a.eps\" ");
+    p("plot \'./Consecutive GCD.dat\' u 1:2 w l ");
     return 0;
 }
 
