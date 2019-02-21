@@ -21,7 +21,6 @@ int main(int argc, const char * argv[]) {
     consecutiveGCDdat.open("Consecutive GCD.dat");
     euclidsGCDdat.open("Euclid's GCD.dat");
     
-    for (int i = 1; i <= 100; i += 3)
     for (int i = 1; i <= 1000; i += 3)
     {
         consecutiveGCDdat << i << '\t' << avgConsecutiveGCD(i) << endl;
@@ -59,7 +58,6 @@ double avgConsecutiveGCD(const int& input)
     {
         totalDivs += consecutiveGCD(input, i);
     }
-    return totalDivs/input;
     return double(totalDivs)/double(input);
 }
 
@@ -77,4 +75,3 @@ int gcd(int n, int i) {
         return 0;
     }
     return gcd(i, n % i) + 1;
-}}
