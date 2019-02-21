@@ -75,3 +75,4 @@ int gcd(int n, int i) {
         return 0;
     }
     return gcd(i, n % i) + 1;
+}
