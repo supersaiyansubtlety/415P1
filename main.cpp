@@ -7,7 +7,7 @@
 //
 
 #include <iostream>
-
+#include "gnuplot.h"
 int consecutiveGCD(const int& left, const int& right);
 int avgConsecutiveGCD(const int& input);
 double MDavg(int n);
@@ -16,6 +16,11 @@ int gcd(int n, int i);
 int main(int argc, const char * argv[]) {
     // insert code here...
     std::cout << "Hello, World!\n";
+
+    gnuplot p;
+    p("set term postscript eps");
+    p("set output \"a.eps\" ");
+    p("plot \'./Consecutive GCD.dat\' u 1:2 w l ");
     return 0;
 }
 
