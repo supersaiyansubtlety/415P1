@@ -7,9 +7,16 @@
 //
 
 #include <iostream>
+
 #include "gnuplot.h"
+
+#include <fstream>
+
+using namespace std;
+
+
 int consecutiveGCD(const int& left, const int& right);
-int avgConsecutiveGCD(const int& input);
+double avgConsecutiveGCD(const int& input);
 double MDavg(int n);
 int gcd(int n, int i);
 
@@ -17,6 +24,21 @@ int main(int argc, const char * argv[]) {
     // insert code here...
     std::cout << "Hello, World!\n";
 
+
+
+    ofstream consecutiveGCDdat, euclidsGCDdat;
+    consecutiveGCDdat.open("Consecutive GCD.dat");
+    euclidsGCDdat.open("Euclid's GCD.dat");
+    
+    for (int i = 1; i <= 1000; i += 3)
+    {
+        consecutiveGCDdat << i << '\t' << avgConsecutiveGCD(i) << endl;
+        euclidsGCDdat << i << '\t' << MDavg(i) << endl;
+    }
+    
+    consecutiveGCDdat.close();
+    euclidsGCDdat.close();
+  
     gnuplot p;
     p("set term postscript eps");
     p("set output \"a.eps\" ");
@@ -43,19 +65,18 @@ int consecutiveGCD(const int& left, const int& right)
     return divisions;
 }
 
-int avgConsecutiveGCD(const int& input)
+double avgConsecutiveGCD(const int& input)
 {
     int totalDivs = 0;
     for (int i = 1; i <= input; i++)
     {
         totalDivs += consecutiveGCD(input, i);
     }
-    return totalDivs/input;
+    return double(totalDivs)/double(input);
 }
 
 double MDavg(int n){
     double MD = 0;
-    int tempN, tempM;
     for(int i = 1; i <= n; i++) {
         MD += gcd(n, i);
     }
