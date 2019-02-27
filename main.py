@@ -12,7 +12,7 @@ def main():
         consec_div_data.append(avg_consecutive_gcd(i))
 
     trace_con = go.Scatter(x=nvals_list, y=consec_div_data, name='Consecutive Integers')
-    trace_euc = go.Scatter(x=nvals_list, y=mdavg_data, name='Euclids')
+    trace_euc = go.Scatter(x=nvals_list, y=mdavg_data, name="Euclid's")
     p_off.plot({'data':  [trace_con, trace_euc], 'layout': {'title': 'Average Case', 'font': dict(size=16)}}, image='png')
 
 
