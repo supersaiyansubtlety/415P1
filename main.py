@@ -17,17 +17,20 @@ def main():
         mdavg_data.append(mdavg(i))
         consec_div_data.append(avg_consecutive_gcd(i))
 
-
-    #kp1_max is the highest index of the fibonacci sequence we will generate
-    kp1_max = 20
-    fib_sequence = fibonacci_gen(kp1_max)
-    for i in range (2, kp1_max + 1):
-                fibonacci_md_data.append(gcd(fib_sequence[i], fib_sequence[i-1]))
-
     trace_con = go.Scatter(x=nvals_list, y=consec_div_data, name='Consecutive Integers')
     trace_euc = go.Scatter(x=nvals_list, y=mdavg_data, name="Euclid's")
-    p_off.plot({'data':  [trace_con, trace_euc], 'layout': {'title': 'Average Case', 'font': dict(size=16)}}, image='png')
+    p_off.plot({'data':  [trace_con, trace_euc], 'layout': {'title': 'Average Case', 'font': dict(size=16)}}, filename='Average Case.html')
+    # , image='png')
 
+    #kp1_max is the highest index of the fibonacci sequence we will generate
+    kp1_max = 100
+    fib_sequence = fibonacci_gen(kp1_max)
+    for i in range(2, kp1_max + 1):
+        fibonacci_md_data.append(gcd(fib_sequence[i], fib_sequence[i-1]))
+
+    trace_euc = go.Scatter(x=fib_sequence, y=fibonacci_md_data, name="Euclid's Worst")
+    p_off.plot({'data':  [trace_euc], 'layout': {'title': "Worst Case Euclid's", 'font': dict(size=16)}}, filename="Worst Case Euclid's.html")
+    #, image='png')
 
 
 def consecutive_gcd(left, right):
@@ -61,11 +64,7 @@ def mdavg(n):
         md += gcd(n, i)
 
     return md / n
-
-
-
 #gcd returns number of modulo divisions for n
-
 
 
 def gcd(n, i):
@@ -75,7 +74,6 @@ def gcd(n, i):
     return gcd(i, n % i) + 1
 
 
-
 def fibonacci_gen(n):
     fib_seq = [0, 1]
     for i in range(2, n + 1):
@@ -83,7 +81,7 @@ def fibonacci_gen(n):
 
     return fib_seq
 
-
+"""
 def prime_gen(k):
     primes = []
     is_prime = []
@@ -105,11 +103,12 @@ def prime_gen(k):
 
     return primes
 
-def get_prime_factors(k, primes)
+def get_prime_factors(k, primes):
     prime_factors = []
 
     while (p <= k): #for each element of primes if k mod p is 0 add it to the list
 
+"""
 
 main()
 
