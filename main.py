@@ -81,7 +81,6 @@ def fibonacci_gen(n):
 
     return fib_seq
 
-"""
 def prime_gen(k):
     primes = []
     is_prime = []
@@ -103,12 +102,18 @@ def prime_gen(k):
 
     return primes
 
+
 def get_prime_factors(k, primes):
     prime_factors = []
 
-    while (p <= k): #for each element of primes if k mod p is 0 add it to the list
+    for i in range(primes.len()): #for each element of primes if k mod p is 0 add it to the list
+        if(primes[i] > k ):
+            break
+        if (k % primes[i] == 0):
+            prime_factors.append(primes[i])
 
-"""
+    return prime_factors
+
 
 main()
 
