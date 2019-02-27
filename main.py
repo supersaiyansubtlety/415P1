@@ -112,7 +112,7 @@ def get_prime_factors(k, primes):
     for i in range(primes.len()): #for each element of primes if k mod p is 0 add it to the list
         if(primes[i] > k ):
             break
-        if (k % primes[i] == 0):
+        while (k % primes[i] == 0):
             prime_factors.append(primes[i])
 
     return prime_factors
