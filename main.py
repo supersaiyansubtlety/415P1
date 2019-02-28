@@ -10,7 +10,6 @@ def main():
     avg_con_data = []
     avg_prm_data = []
 
-
     # fibonacci x values are the m values (fib_sequence[i])
 
     # User testing mode
@@ -39,6 +38,7 @@ def main():
         avg_con_data.append(avg_consecutive_gcd(i))
         avg_prm_data.append(avg_prime_gcd(i))
 
+
     # kp1_max is the highest index of the fibonacci sequence we will generate
     kp1_max = 100
     fib_sequence = fibonacci_gen(kp1_max)
@@ -51,6 +51,7 @@ def main():
     trace_euc = go.Scatter(x=avg_input_list, y=avg_euc_data, name="Euclid's")
     trace_prm = go.Scatter(x=avg_input_list, y=avg_prm_data, name="Prime Factorization")
     p_off.plot({'data':  [trace_con, trace_euc, trace_prm], 'layout': {'title': 'Average Case', 'font': dict(size=16)}}, filename='Average Case.html')
+
 
     trace_euc = go.Scatter(x=fib_sequence, y=fib_euc_data, name="Euclid's Worst")
     p_off.plot({'data':  [trace_euc], 'layout': {'title': "Worst Case", 'font': dict(size=16)}}, filename="Worst Case Eclid's.html")
@@ -142,6 +143,7 @@ def get_prime_factors(k, primes):
     return prime_factors
 
 
+
 # returns the gcd of n, i
 
 
@@ -150,6 +152,7 @@ def gcd(n, i):
         return n
 
     return gcd(i, n % i)
+
 
 
 def prime_gcd(m, n):
