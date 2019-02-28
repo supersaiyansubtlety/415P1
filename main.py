@@ -1,51 +1,59 @@
 
 import plotly.offline as p_off
 import plotly.graph_objs as go
+from collections import Counter
 
 
 def main():
-    nvals_list = []
-    mdavg_data = []
-    consec_div_data = []
+    avg_input_list = []
+    avg_euc_data = []
+    avg_con_data = []
+    avg_prm_data = []
 
-    fibonacci_md_data = []
+
     # fibonacci x values are the m values (fib_sequence[i])
 
     # User testing mode
+    print("User testing mode")
 
-    n = input("(Task1) enter a value for n: ")
-    print("MDavg: ", mdavg(n))
-    print("Davg: ", avg_consecutive_gcd(n))
+    n = int(input("(Task1) enter a value for n: "))
+    print("MDavg: ", str(avg_euclids_gcd(n)))
+    print("Davg: ", str(avg_consecutive_gcd(n)))
 
-    k = input("(Task2) enter a value for k: ")
+    k = int(input("(Task2) enter a value for k: "))
     fib_seq = fibonacci_gen(k+1)
-    print("GCD(", fib_seq[k+1], ", ", fib_seq[k], ") = ", gcd(fib_seq[k+1], fib_seq[k]))
+    print("GCD(", str(fib_seq[k+1]), ", ", str(fib_seq[k]), ") = ", str(gcd(fib_seq[k+1], fib_seq[k])))
 
-    m = input("(Task3) enter a value for m: ")
-    n = input("(Task3) enter a value for n: ")
+    m = int(input("(Task3) enter a value for m: "))
+    n = int(input("(Task3) enter a value for n: "))
 
-    print("GCD(", m, ", ", n, ") = ", prime_gcd(m, n))
+    print("GCD(", m, ", ", n, ") = ", str(prime_gcd(m, n)))
+
+    print("Scatter plot mode")
+
+    fib_euc_data = []
 
     for i in range(1, 100, 3):
-
-        nvals_list.append(i)
-        mdavg_data.append(mdavg(i))
-        consec_div_data.append(avg_consecutive_gcd(i))
-
-    trace_con = go.Scatter(x=nvals_list, y=consec_div_data, name='Consecutive Integers')
-    trace_euc = go.Scatter(x=nvals_list, y=mdavg_data, name="Euclid's")
-    p_off.plot({'data':  [trace_con, trace_euc], 'layout': {'title': 'Average Case', 'font': dict(size=16)}}, filename='Average Case.html')
-    # , image='png')
+        avg_input_list.append(i)
+        avg_euc_data.append(avg_euclids_gcd(i))
+        avg_con_data.append(avg_consecutive_gcd(i))
+        avg_prm_data.append(avg_prime_gcd(i))
 
     # kp1_max is the highest index of the fibonacci sequence we will generate
     kp1_max = 100
     fib_sequence = fibonacci_gen(kp1_max)
-    for i in range(2, kp1_max + 1):
-        fibonacci_md_data.append(MD_gcd(fib_sequence[i], fib_sequence[i-1]))
 
-    trace_euc = go.Scatter(x=fib_sequence, y=fibonacci_md_data, name="Euclid's Worst")
-    p_off.plot({'data':  [trace_euc], 'layout': {'title': "Worst Case Euclid's", 'font': dict(size=16)}}, filename="Worst Case Euclid's.html")
-    # , image='png')
+    for i in range(2, kp1_max + 1):
+
+        fib_euc_data.append(md_euclids_gcd(fib_sequence[i], fib_sequence[i - 1]))
+
+    trace_con = go.Scatter(x=avg_input_list, y=avg_con_data, name='Consecutive Integers')
+    trace_euc = go.Scatter(x=avg_input_list, y=avg_euc_data, name="Euclid's")
+    trace_prm = go.Scatter(x=avg_input_list, y=avg_prm_data, name="Prime Factorization")
+    p_off.plot({'data':  [trace_con, trace_euc, trace_prm], 'layout': {'title': 'Average Case', 'font': dict(size=16)}}, filename='Average Case.html')
+
+    trace_euc = go.Scatter(x=fib_sequence, y=fib_euc_data, name="Euclid's Worst")
+    p_off.plot({'data':  [trace_euc], 'layout': {'title': "Worst Case", 'font': dict(size=16)}}, filename="Worst Case Eclid's.html")
 
 
 def consecutive_gcd(left, right):
@@ -73,22 +81,22 @@ def avg_consecutive_gcd(in_val):
     return total_divs/in_val
 
 
-def mdavg(n):
+def md_euclids_gcd(n, i):
+    if i == 0:
+        return 0
+
+    return md_euclids_gcd(i, n % i) + 1
+
+
+def avg_euclids_gcd(n):
     md = 0
     for i in range(1, n + 1):
-        md += gcd(n, i)
+        md += md_euclids_gcd(n, i)
 
     return md / n
 
 
-# euclids_gcd returns number of modulo divisions for n
-
-
-def MD_gcd(n, i):
-    if i == 0:
-        return 0
-
-    return gcd(i, n % i) + 1
+# gcd returns number of modulo divisions for n
 
 
 def fibonacci_gen(n):
@@ -114,7 +122,7 @@ def prime_gen(k):
                 is_prime[i] = False
         p += 1
 
-    for i in range(k+1):
+    for i in range(2, k+1):
         if is_prime[i]:
             primes.append(i)
 
@@ -124,16 +132,17 @@ def prime_gen(k):
 def get_prime_factors(k, primes):
     prime_factors = []
 
-    for i in range(primes.len()):  # for each element of primes if k mod p is 0 add it to the list
-        if primes[i] > k :
+    for i in range(len(primes)):  # for each element of primes if k mod p is 0 add it to the list
+        if primes[i] > k:
             break
         while k % primes[i] == 0:
+            k /= primes[i]
             prime_factors.append(primes[i])
 
     return prime_factors
 
 
-# returns the gcd of
+# returns the gcd of n, i
 
 
 def gcd(n, i):
@@ -141,6 +150,31 @@ def gcd(n, i):
         return n
 
     return gcd(i, n % i)
+
+
+def prime_gcd(m, n):
+    if m < n:
+        minimum = n
+    else:
+        minimum = m
+
+    m_primes = get_prime_factors(m, prime_gen(minimum))
+    n_primes = get_prime_factors(n, prime_gen(minimum))
+    intersect = list((Counter(m_primes) & Counter(n_primes)).elements())
+    product = 1
+    for i in intersect:
+        product *= i
+
+    return product
+
+
+def avg_prime_gcd(n):
+    md = 0
+    for i in range(1, n + 1):
+        md += prime_gcd(n, i)
+
+    return md / n
+
 
 main()
 
