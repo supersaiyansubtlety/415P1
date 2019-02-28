@@ -9,7 +9,22 @@ def main():
     consec_div_data = []
 
     fibonacci_md_data = []
-    #fibonacci x values are the m values (fib_sequence[i])
+    # fibonacci x values are the m values (fib_sequence[i])
+
+    # User testing mode
+
+    n = input("(Task1) enter a value for n: ")
+    print("MDavg: ", mdavg(n))
+    print("Davg: ", avg_consecutive_gcd(n))
+
+    k = input("(Task2) enter a value for k: ")
+    fib_seq = fibonacci_gen(k+1)
+    print("GCD(", fib_seq[k+1], ", ", fib_seq[k], ") = ", gcd(fib_seq[k+1], fib_seq[k]))
+
+    m = input("(Task3) enter a value for m: ")
+    n = input("(Task3) enter a value for n: ")
+
+    print("GCD(", m, ", ", n, ") = ", prime_gcd(m, n))
 
     for i in range(1, 100, 3):
 
@@ -22,15 +37,15 @@ def main():
     p_off.plot({'data':  [trace_con, trace_euc], 'layout': {'title': 'Average Case', 'font': dict(size=16)}}, filename='Average Case.html')
     # , image='png')
 
-    #kp1_max is the highest index of the fibonacci sequence we will generate
+    # kp1_max is the highest index of the fibonacci sequence we will generate
     kp1_max = 100
     fib_sequence = fibonacci_gen(kp1_max)
     for i in range(2, kp1_max + 1):
-        fibonacci_md_data.append(gcd(fib_sequence[i], fib_sequence[i-1]))
+        fibonacci_md_data.append(MD_gcd(fib_sequence[i], fib_sequence[i-1]))
 
     trace_euc = go.Scatter(x=fib_sequence, y=fibonacci_md_data, name="Euclid's Worst")
     p_off.plot({'data':  [trace_euc], 'layout': {'title': "Worst Case Euclid's", 'font': dict(size=16)}}, filename="Worst Case Euclid's.html")
-    #, image='png')
+    # , image='png')
 
 
 def consecutive_gcd(left, right):
@@ -64,10 +79,12 @@ def mdavg(n):
         md += gcd(n, i)
 
     return md / n
-#gcd returns number of modulo divisions for n
 
 
-def gcd(n, i):
+# euclids_gcd returns number of modulo divisions for n
+
+
+def MD_gcd(n, i):
     if i == 0:
         return 0
 
@@ -81,6 +98,7 @@ def fibonacci_gen(n):
 
     return fib_seq
 
+
 def prime_gen(k):
     primes = []
     is_prime = []
@@ -88,16 +106,16 @@ def prime_gen(k):
         is_prime.append(True)
 
     p = 2
-    while (p*p <= k):
+    while p*p <= k:
 
-        if (is_prime[p] == True):
+        if is_prime[p]:
 
             for i in range(p * p, k+1, p):
                 is_prime[i] = False
         p += 1
 
     for i in range(k+1):
-        if (is_prime[i] == True):
+        if is_prime[i]:
             primes.append(i)
 
     return primes
@@ -106,14 +124,23 @@ def prime_gen(k):
 def get_prime_factors(k, primes):
     prime_factors = []
 
-    for i in range(primes.len()): #for each element of primes if k mod p is 0 add it to the list
-        if(primes[i] > k ):
+    for i in range(primes.len()):  # for each element of primes if k mod p is 0 add it to the list
+        if primes[i] > k :
             break
-        while (k % primes[i] == 0):
+        while k % primes[i] == 0:
             prime_factors.append(primes[i])
 
     return prime_factors
 
+
+# returns the gcd of
+
+
+def gcd(n, i):
+    if i == 0:
+        return n
+
+    return gcd(i, n % i)
 
 main()
 
