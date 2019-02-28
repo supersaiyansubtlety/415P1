@@ -10,8 +10,27 @@ def main():
     avg_con_data = []
     avg_prm_data = []
 
-    fib_euc_data = []
     # fibonacci x values are the m values (fib_sequence[i])
+
+    # User testing mode
+    print("User testing mode")
+
+    n = int(input("(Task1) enter a value for n: "))
+    print("MDavg: ", str(avg_euclids_gcd(n)))
+    print("Davg: ", str(avg_consecutive_gcd(n)))
+
+    k = int(input("(Task2) enter a value for k: "))
+    fib_seq = fibonacci_gen(k+1)
+    print("GCD(", str(fib_seq[k+1]), ", ", str(fib_seq[k]), ") = ", str(gcd(fib_seq[k+1], fib_seq[k])))
+
+    m = int(input("(Task3) enter a value for m: "))
+    n = int(input("(Task3) enter a value for n: "))
+
+    print("GCD(", m, ", ", n, ") = ", str(prime_gcd(m, n)))
+
+    print("Scatter plot mode")
+
+    fib_euc_data = []
 
     for i in range(1, 100, 3):
         avg_input_list.append(i)
@@ -19,17 +38,20 @@ def main():
         avg_con_data.append(avg_consecutive_gcd(i))
         avg_prm_data.append(avg_prime_gcd(i))
 
+
     # kp1_max is the highest index of the fibonacci sequence we will generate
     kp1_max = 100
     fib_sequence = fibonacci_gen(kp1_max)
 
     for i in range(2, kp1_max + 1):
-        fib_euc_data.append(eculids_gcd(fib_sequence[i], fib_sequence[i - 1]))
+
+        fib_euc_data.append(md_euclids_gcd(fib_sequence[i], fib_sequence[i - 1]))
 
     trace_con = go.Scatter(x=avg_input_list, y=avg_con_data, name='Consecutive Integers')
     trace_euc = go.Scatter(x=avg_input_list, y=avg_euc_data, name="Euclid's")
     trace_prm = go.Scatter(x=avg_input_list, y=avg_prm_data, name="Prime Factorization")
     p_off.plot({'data':  [trace_con, trace_euc, trace_prm], 'layout': {'title': 'Average Case', 'font': dict(size=16)}}, filename='Average Case.html')
+
 
     trace_euc = go.Scatter(x=fib_sequence, y=fib_euc_data, name="Euclid's Worst")
     p_off.plot({'data':  [trace_euc], 'layout': {'title': "Worst Case", 'font': dict(size=16)}}, filename="Worst Case Eclid's.html")
@@ -60,21 +82,22 @@ def avg_consecutive_gcd(in_val):
     return total_divs/in_val
 
 
-def eculids_gcd(n, i):
+def md_euclids_gcd(n, i):
     if i == 0:
         return 0
 
-    return eculids_gcd(i, n % i) + 1
+    return md_euclids_gcd(i, n % i) + 1
 
 
 def avg_euclids_gcd(n):
     md = 0
     for i in range(1, n + 1):
-        md += eculids_gcd(n, i)
+        md += md_euclids_gcd(n, i)
 
     return md / n
 
-    # gcd returns number of modulo divisions for n
+
+# gcd returns number of modulo divisions for n
 
 
 def fibonacci_gen(n):
@@ -118,6 +141,18 @@ def get_prime_factors(k, primes):
             prime_factors.append(primes[i])
 
     return prime_factors
+
+
+
+# returns the gcd of n, i
+
+
+def gcd(n, i):
+    if i == 0:
+        return n
+
+    return gcd(i, n % i)
+
 
 
 def prime_gcd(m, n):
