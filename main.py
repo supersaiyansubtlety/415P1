@@ -143,7 +143,6 @@ def get_prime_factors(k, primes):
     return prime_factors
 
 
-
 # returns the gcd of n, i
 
 
@@ -152,7 +151,6 @@ def gcd(n, i):
         return n
 
     return gcd(i, n % i)
-
 
 
 def prime_gcd(m, n):
