@@ -2,10 +2,13 @@
 import plotly.offline as p_off
 import plotly.graph_objs as go
 from collections import Counter
-
+from random import *
+from numpy import arange,array,ones,asarray
+from scipy import stats
 
 def main():
     avg_input_list = []
+    avg_input_list_euc = []
     avg_euc_data = []
     avg_con_data = []
     avg_prm_data = []
@@ -32,15 +35,26 @@ def main():
 
     fib_euc_data = []
 
+    min_primes_list = []
+
     for i in range(1, 100, 3):
         avg_input_list.append(i)
-        avg_euc_data.append(avg_euclids_gcd(i))
         avg_con_data.append(avg_consecutive_gcd(i))
-        avg_prm_data.append(avg_prime_gcd(i))
 
+    for i in range(1, 1000, 3):
+        avg_input_list_euc.append(i)
+        avg_euc_data.append(avg_euclids_gcd(i))
+
+    for i in range(1, 1000):
+        m = randint(1, 10000)
+        n = randint(1, 10000)
+
+        avg_prm_data.append(num_prime_ops(max(m, n), min(m, n)))
+
+        min_primes_list.append(len(get_prime_factors(max(m, n), prime_gen(max(m, n)))))
 
     # kp1_max is the highest index of the fibonacci sequence we will generate
-    kp1_max = 100
+    kp1_max = 46
     fib_sequence = fibonacci_gen(kp1_max)
 
     for i in range(2, kp1_max + 1):
@@ -48,13 +62,19 @@ def main():
         fib_euc_data.append(md_euclids_gcd(fib_sequence[i], fib_sequence[i - 1]))
 
     trace_con = go.Scatter(x=avg_input_list, y=avg_con_data, name='Consecutive Integers')
-    trace_euc = go.Scatter(x=avg_input_list, y=avg_euc_data, name="Euclid's")
-    trace_prm = go.Scatter(x=avg_input_list, y=avg_prm_data, name="Prime Factorization")
-    p_off.plot({'data':  [trace_con, trace_euc, trace_prm], 'layout': {'title': 'Average Case', 'font': dict(size=16)}}, filename='Average Case.html')
+    trace_euc = go.Scatter(x=avg_input_list_euc, y=avg_euc_data, name="Euclid's")
+    p_off.plot({'data':  [trace_con], 'layout': {'title': 'Average Case Consecutive Integers', 'font': dict(size=16), 'yaxis': dict(title='avg divisions'), 'xaxis': dict(title='n')}}, filename='Average Case Consecutive.html')
+    p_off.plot({'data':  [trace_euc], 'layout': {'title': "Average Case Euclid's Algorithm", 'font': dict(size=16), 'yaxis': dict(title='avg modulo divisions'), 'xaxis': dict(title='n')}}, filename='Average Case Euclids.html')
 
+    slope, intercept, r_value, p_value, std_err = stats.linregress(min_primes_list, avg_prm_data)
+    line = slope*asarray(min_primes_list)+intercept
+
+    trace_prm = go.Scatter(x=min_primes_list, y=avg_prm_data, name="Prime Factorization", mode="markers")
+    trend_line = go.Scatter(x=min_primes_list, y=line, name="Fit", mode="lines")
+    p_off.plot({'data': [trace_prm, trend_line], 'layout': {'title': 'Prime vs Min', 'font': dict(size=16), 'yaxis': dict(title="comparison operations"), 'xaxis': dict(title="max size of prime lists")}}, filename='Prime vs Min.html')
 
     trace_euc = go.Scatter(x=fib_sequence, y=fib_euc_data, name="Euclid's Worst")
-    p_off.plot({'data':  [trace_euc], 'layout': {'title': "Worst Case", 'font': dict(size=16)}}, filename="Worst Case Eclid's.html")
+    p_off.plot({'data':  [trace_euc], 'layout': {'title': "Worst Case", 'font': dict(size=16), 'yaxis': dict(title="modulo divisoins"), 'xaxis': dict(title="m: fibonacci")}}, filename="Worst Case Eclid's.html")
 
 
 def consecutive_gcd(left, right):
@@ -170,11 +190,38 @@ def prime_gcd(m, n):
 
 
 def avg_prime_gcd(n):
-    md = 0
+    ops = 0
     for i in range(1, n + 1):
-        md += prime_gcd(n, i)
+        ops += num_prime_ops(n, i)
 
-    return md / n
+    return ops / n
+
+
+def num_prime_ops(m, n):
+    operations = 0
+    if m < n:
+        minimum = n
+    else:
+        minimum = m
+
+    m_primes = get_prime_factors(m, prime_gen(minimum))
+    n_primes = get_prime_factors(n, prime_gen(minimum))
+
+    i = 0
+    j = 0
+    while i < len(m_primes) and j < len(n_primes):
+        if m_primes[i] == n_primes[j]:
+            operations += 1
+            i += 1
+            j += 1
+        elif m_primes[i] < n_primes[j]:
+            operations += 2
+            i += 1
+        else:
+            operations += 2
+            j += 1
+
+    return operations
 
 
 main()
